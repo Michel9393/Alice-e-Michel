@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Alice e Michel</title>
+<!-- Google Font dal gusto cartoon -->
+<link href="https://fonts.googleapis.com/css2?family=Carter+One&display=swap" rel="stylesheet">
+<style>
+/* Stili generali */
+body {
+margin: 0;
+padding: 0;
+font-family: Arial, sans-serif;
+background-color: #f2f2f2;
+overflow-x: hidden;
+}
+header {
+background-color: #fff;
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 10px 20px;
+box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+position: relative;
+z-index: 2;
+}
+#title {
+font-family: 'Carter One', cursive;
+font-size: 2em;
+color: black;
+}
+#clock {
+font-size: 1em;
+color: black;
+}
+nav {
+background-color: #fff;
+padding: 10px;
+display: flex;
+justify-content: space-around;
+box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+position: sticky;
+top: 0;
+z-index: 2;
+}
+nav a {
+text-decoration: none;
+color: #333;
+padding: 10px;
+font-weight: bold;
+}
+nav a:hover {
+color: #555;
+}
+.section {
+padding: 20px;
+display: none;
+overflow-y: auto;
+height: calc(100vh - 150px);
+}
+.active {
+display: block;
+}
+/* Animazione dello sfondo con scritte d'amore */
+.background {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: 0;
+pointer-events: none;
+overflow: hidden;
+}
+.background div {
+position: absolute;
+font-size: 2em;
+color: rgba(255, 0, 0, 0.2);
+animation: float 10s infinite;
+white-space: nowrap;
+}
+@keyframes float {
+0% { transform: translateY(100%); opacity: 0; }
+50% { opacity: 1; }
+100% { transform: translateY(-100%); opacity: 0; }
+}
+/* Tabella semplice */
+table {
+width: 100%;
+border-collapse: collapse;
+margin: 10px 0;
+}
+table, th, td {
+border: 1px solid #ccc;
+}
+th, td {
+padding: 10px;
+text-align: left;
+}
+button {
+padding: 5px 10px;
+margin: 5px;
+cursor: pointer;
+}
+/* Evidenzia in verde se il desiderio è alla portata */
+.affordable {
+background-color: #c8e6c9;
+}
+</style>
+</head>
+<body>
+<!-- Sfondo animato -->
+<div class="background" id="background"></div>
+<!-- Header con titolo e orologio -->
+<header>
+<div id="title">Alice e Michel</div>
+<div id="clock"></div>
+</header>
+<!-- Menu di navigazione -->
+<nav>
+<a href="#" onclick="showSection('entrateUscite')">Entrate / Uscite</a>
+<a href="#" onclick="showSection('speseFisse')">Spese mensili fisse</a>
+<a href="#" onclick="showSection('michelLavoro')">Michel lavoro</a>
+<a href="#" onclick="showSection('aliceLavoro')">Alice lavoro</a>
+<a href="#" onclick="showSection('documenti')">Documenti vari e sanitari</a>
+<a href="#" onclick="showSection('percorsoMichel')">Percorso Michel</a>
+<a href="#" onclick="showSection('cassettoDesideri')">Cassetto dei desideri</a>
+<a href="#" onclick="showSection('agenda')">Agenda - Calendario</a>
+</nav>
+<!-- Contenuto delle sezioni -->
+<div id="content">
+<!-- Sezione Entrate / Uscite -->
+<div id="entrateUscite" class="section active">
+<h2>Entrate / Uscite</h2>
+<form id="formEntrateUscite">
+<input type="text" id="descrizione" placeholder="Descrizione" required>
+<input type="number" id="importo" placeholder="Importo" required>
+<select id="tipo">
+<option value="entrata">Entrata</option>
+<option value="uscita">Uscita</option>
+</select>
+<button type="submit">Aggiungi</button>
+</form>
+<table id="tableEntrateUscite">
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Descrizione</th>
+<th>Importo</th>
+<th>Azione</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+<!-- Sezione Spese mensili fisse -->
+<div id="speseFisse" class="section">
+<h2>Spese mensili fisse</h2>
+<form id="formSpeseFisse">
+<input type="text" id="spesaDescrizione" placeholder="Descrizione spesa" required>
+<input type="number" id="spesaImporto" placeholder="Importo" required>
+<button type="submit">Aggiungi Spesa</button>
+</form>
+<table id="tableSpeseFisse">
+<thead>
+<tr>
+<th>Descrizione</th>
+<th>Importo</th>
+<th>Azione</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+<!-- Sezione Michel Lavoro -->
+<div id="michelLavoro" class="section">
+<h2>Michel Lavoro</h2>
+<p>Carica i tuoi file e cartelle qui.</p>
+<input type="file" id="michelFile" multiple>
+<div id="michelFiles"></div>
+</div>
+<!-- Sezione Alice Lavoro -->
+<div id="aliceLavoro" class="section">
+<h2>Alice Lavoro</h2>
+<p>Carica i tuoi file e cartelle qui.</p>
+<input type="file" id="aliceFile" multiple>
+<div id="aliceFiles"></div>
+</div>
+<!-- Sezione Documenti vari e sanitari -->
+<div id="documenti" class="section">
+<h2>Documenti vari e sanitari</h2>
+<p>Carica i tuoi documenti importanti qui.</p>
+<input type="file" id="documentiFile" multiple>
+<div id="documentiFiles"></div>
+</div>
+<!-- Sezione Percorso Michel -->
+<div id="percorsoMichel" class="section">
+<h2>Percorso Michel</h2>
+<p>Spazio dedicato al progetto per abbandonare il fumo.</p>
+<!-- Qui potrai inserire altre informazioni in seguito -->
+<textarea id="michelNote" placeholder="Inserisci informazioni..."></textarea>
+</div>
+<!-- Sezione Cassetto dei desideri -->
+<div id="cassettoDesideri" class="section">
+<h2>Cassetto dei desideri</h2>
+<form id="formDesideri">
+<input type="text" id="desiderioDescrizione" placeholder="Descrizione desiderio" required>
+<input type="number" id="desiderioCosto" placeholder="Costo" required>
+<button type="submit">Aggiungi Desiderio</button>
+</form>
+<div>
+<label>Risparmi Mensili: </label>
+<input type="number" id="risparmiMensili" placeholder="Inserisci risparmi" value="0">
+</div>
+<table id="tableDesideri">
+<thead>
+<tr>
+<th>Descrizione</th>
+<th>Costo</th>
+<th>Status</th>
+<th>Azione</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+<!-- Sezione Agenda - Calendario -->
+<div id="agenda" class="section">
+<h2>Agenda - Calendario</h2>
+<form id="formAgenda">
+<input type="text" id="eventoTitolo" placeholder="Titolo evento" required>
+<input type="datetime-local" id="eventoData" required>
+<button type="submit">Aggiungi Evento</button>
+</form>
+<table id="tableAgenda">
+<thead>
+<tr>
+<th>Evento</th>
+<th>Data</th>
+<th>Azione</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+</div>
+
+<script>
+// Orologio in alto a destra
+function updateClock() {
+const now = new Date();
+const options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+document.getElementById('clock').innerText = now.toLocaleTimeString('it-IT', options);
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// Navigazione tra le sezioni
+function showSection(id) {
+const sections = document.querySelectorAll('.section');
+sections.forEach(sec => sec.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+}
+
+// Funzionalità Entrate / Uscite
+const formEU = document.getElementById('formEntrateUscite');
+const tableEU = document.getElementById('tableEntrateUscite').getElementsByTagName('tbody')[0];
+formEU.addEventListener('submit', function(e) {
+e.preventDefault();
+const descrizione = document.getElementById('descrizione').value;
+const importo = document.getElementById('importo').value;
+const tipo = document.getElementById('tipo').value;
+const row = tableEU.insertRow();
+row.insertCell(0).innerText = tipo;
+row.insertCell(1).innerText = descrizione;
+row.insertCell(2).innerText = importo;
+const cellAzione = row.insertCell(3);
+const btnElimina = document.createElement('button');
+btnElimina.innerText = 'Elimina';
+btnElimina.onclick = function() { tableEU.removeChild(row); };
+cellAzione.appendChild(btnElimina);
+formEU.reset();
+});
+
+// Funzionalità Spese mensili fisse
+const formSF = document.getElementById('formSpeseFisse');
+const tableSF = document.getElementById('tableSpeseFisse').getElementsByTagName('tbody')[0];
+formSF.addEventListener('submit', function(e) {
+e.preventDefault();
+const descrizione = document.getElementById('spesaDescrizione').value;
+const importo = document.getElementById('spesaImporto').value;
+const row = tableSF.insertRow();
+row.insertCell(0).innerText = descrizione;
+row.insertCell(1).innerText = importo;
+const cellAzione = row.insertCell(2);
+const btnElimina = document.createElement('button');
+btnElimina.innerText = 'Elimina';
+btnElimina.onclick = function() { tableSF.removeChild(row); };
+cellAzione.appendChild(btnElimina);
+formSF.reset();
+});
+
+// Gestione degli upload per Michel, Alice e Documenti
+function handleFiles(input, container) {
+const files = input.files;
+for (let i = 0; i < files.length; i++) {
+const fileDiv = document.createElement('div');
+fileDiv.innerText = files[i].name;
+container.appendChild(fileDiv);
+}
+}
+document.getElementById('michelFile').addEventListener('change', function() {
+handleFiles(this, document.getElementById('michelFiles'));
+});
+document.getElementById('aliceFile').addEventListener('change', function() {
+handleFiles(this, document.getElementById('aliceFiles'));
+});
+document.getElementById('documentiFile').addEventListener('change', function() {
+handleFiles(this, document.getElementById('documentiFiles'));
+});
+
+// Funzionalità Cassetto dei desideri
+const formDesideri = document.getElementById('formDesideri');
+const tableDesideri = document.getElementById('tableDesideri').getElementsByTagName('tbody')[0];
+formDesideri.addEventListener('submit', function(e) {
+e.preventDefault();
+const descrizione = document.getElementById('desiderioDescrizione').value;
+const costo = parseFloat(document.getElementById('desiderioCosto').value);
+addDesiderio(descrizione, costo, 'Da acquistare');
+formDesideri.reset();
+});
+function addDesiderio(descrizione, costo, status) {
+const row = tableDesideri.insertRow();
+row.insertCell(0).innerText = descrizione;
+row.insertCell(1).innerText = costo;
+const statusCell = row.insertCell(2);
+statusCell.innerText = status;
+const cellAzione = row.insertCell(3);
+const btnElimina = document.createElement('button');
+btnElimina.innerText = 'Elimina';
+btnElimina.onclick = function() { tableDesideri.removeChild(row); };
+const btnModifica = document.createElement('button');
+btnModifica.innerText = 'Modifica';
+btnModifica.onclick = function() {
+const newStatus = prompt('Modifica lo status:', statusCell.innerText);
+if (newStatus !== null) {
+statusCell.innerText = newStatus;
+checkAffordability(row);
+}
+};
+const btnAcquistato = document.createElement('button');
+btnAcquistato.innerText = 'Acquistato';
+btnAcquistato.onclick = function() {
+statusCell.innerText = 'Acquistato';
+checkAffordability(row);
+};
+cellAzione.appendChild(btnElimina);
+cellAzione.appendChild(btnModifica);
+cellAzione.appendChild(btnAcquistato);
+checkAffordability(row);
+}
+function checkAffordability(row) {
+const risparmi = parseFloat(document.getElementById('risparmiMensili').value);
+const costo = parseFloat(row.cells[1].innerText);
+if(costo <= risparmi) {
+row.classList.add('affordable');
+} else {
+row.classList.remove('affordable');
+}
+}
+document.getElementById('risparmiMensili').addEventListener('input', function() {
+const rows = tableDesideri.rows;
+for(let i=0; i<rows.length; i++){
+checkAffordability(rows[i]);
+}
+});
+
+// Funzionalità Agenda - Calendario
+const formAgenda = document.getElementById('formAgenda');
+const tableAgenda = document.getElementById('tableAgenda').getElementsByTagName('tbody')[0];
+formAgenda.addEventListener('submit', function(e) {
+e.preventDefault();
+const titolo = document.getElementById('eventoTitolo').value;
+const dataEvento = document.getElementById('eventoData').value;
+const row = tableAgenda.insertRow();
+row.insertCell(0).innerText = titolo;
+row.insertCell(1).innerText = new Date(dataEvento).toLocaleString();
+const cellAzione = row.insertCell(2);
+const btnElimina = document.createElement('button');
+btnElimina.innerText = 'Elimina';
+btnElimina.onclick = function() { tableAgenda.removeChild(row); };
+cellAzione.appendChild(btnElimina);
+formAgenda.reset();
+});
+
+// Animazione di sfondo: scritte d'amore che cambiano stile
+function createLoveText() {
+const texts = ["Amore", "Love", "Cariño", "Liebe", "Amour"];
+const randomText = texts[Math.floor(Math.random()*texts.length)];
+const div = document.createElement('div');
+div.innerText = randomText;
+div.style.left = Math.random()*100 + "%";
+div.style.fontSize = (Math.random()*2+1) + "em";
+div.style.animationDuration = (Math.random()*10+5) + "s";
+document.getElementById('background').appendChild(div);
+setTimeout(() => { div.remove(); }, 15000);
+}
+setInterval(createLoveText, 2000);
+</script>
+</body>
+</html>
